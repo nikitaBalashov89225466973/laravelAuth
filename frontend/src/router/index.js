@@ -9,7 +9,6 @@ const router = createRouter({
 
 
 router.beforeEach((nextPage, currentPage, goTo)=>{
-    console.log(nextPage.meta.requiredAuth && store.state.user.token === null)
     if(nextPage.meta.requiredAuth && store.state.user.token === null) goTo({name: "login"})
     else if(store.state.user.token && nextPage.meta.guestsRoute ) goTo({name: "profile"})
     else goTo()

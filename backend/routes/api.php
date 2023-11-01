@@ -14,6 +14,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+Route::group([
+
+    'middleware' => 'api',
+    'prefix' => 'auth'
+
+], function ($router) {
+
+    Route::post('login', [\App\Http\Controllers\AuthController::class,'login']);
+    Route::post('logout',  [\App\Http\Controllers\AuthController::class,'logout']);
+    Route::post('refresh',  [\App\Http\Controllers\AuthController::class,'refresh']);
+    Route::post('me',  [\App\Http\Controllers\AuthController::class,'me']);
+
+});
+
+//только для залогиненых пользователей
+Route::group([
+
+    'middleware' => 'jwt.auth',
+
+], function ($router) {
+
+    Route::get('test', function(){
+        return response()->json(['test' => 'ok','data'=> 'asdjhksdhfjkvhdjlkjdvlkzh']);
+    });
 });
