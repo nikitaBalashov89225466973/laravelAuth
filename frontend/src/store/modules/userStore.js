@@ -14,10 +14,14 @@ const userModule = {
         setToken: (state, token) => {
 
             state.token = token
-
             sessionStorage.setItem('TOKEN', token)
 
-        }
+        },
+        removeUser: (state) => {
+            state.data = {},
+            state.token = null,
+            sessionStorage.clear('TOKEN')
+        }   
     },
     actions: {
         initUserStorage({commit}){
@@ -39,6 +43,9 @@ const userModule = {
                 return data;
             })
 
+        },
+        logout({commit}){
+            commit('removeUser')
         },
         register({commit}, user){
 
