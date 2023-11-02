@@ -15,9 +15,9 @@ axiosClient.interceptors.response.use(
     config => { return config },
 
     error => {
-        console.error('error', error.response.data.message)
+        
         if(error.response.data.message === 'Token has expired'){
-
+            console.error('error', error.response.data.message)
             return axios.post('http://127.0.0.1:8000/api/auth/refresh', {}, {
                 headers: {
                     'authorization': `Bearer ${sessionStorage.getItem('TOKEN')}`
@@ -33,6 +33,8 @@ axiosClient.interceptors.response.use(
                 return axiosClient.request(error.config)
             })
         }
+        
+        throw error
     }
 )
 export default axiosClient

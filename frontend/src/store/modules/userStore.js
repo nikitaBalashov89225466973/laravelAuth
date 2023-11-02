@@ -35,11 +35,19 @@ const userModule = {
             return API.post('/auth/login', user)
             .then(({data})=> {
                 commit("setUser", data.user)
-
                 commit("setToken", data.token.original.access_token)
                 return data;
             })
 
+        },
+        register({commit}, user){
+
+            return API.post('/auth/registrated', user)
+            .then(({data})=> {
+                commit("setUser", data.user)
+                commit("setToken", data.token.original.access_token)
+                return data;
+            })
         },
         refreshToken({commit}, token){
             commit("setToken", token)

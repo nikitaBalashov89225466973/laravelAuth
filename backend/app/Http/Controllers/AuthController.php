@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use \Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use \Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -15,7 +16,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('jwt.auth', ['except' => ['login', 'refresh']]);
+        $this->middleware('jwt.auth', ['except' => ['login', 'refresh', 'register']]);
     }
 
     /**
@@ -42,7 +43,25 @@ class AuthController extends Controller
 
         return response()->json(['user' => auth()->user(), 'token' => $this->respondWithToken($token)]);
     }
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'email'=> 'required|email|string|unique:users,email',
+            'password'=> ['required','confirmed', 
+                Password::min(8)->mixedCase()->numbers()->symbols()
+            ],
+        ]);
 
+        $user = \App\Models\User::create([
+            'name'=> $data['name'],
+            'email'=> $data['email'],
+            'password'=> bcrypt($data['password']),
+        ]);
+        $token = auth()->login($user);
+        return response()->json(['user' => auth()->user(), 'token' => $this->respondWithToken($token)]);
+    
+    }
     /**
      * Get the authenticated User.
      *
@@ -90,4 +109,6 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
+
+
 }
