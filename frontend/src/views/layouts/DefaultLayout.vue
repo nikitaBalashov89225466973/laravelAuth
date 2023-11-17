@@ -54,7 +54,7 @@
       </div>
     </nav>
     <main class="w-3/4 m-auto">
-      <router-view></router-view>
+      <slot></slot>
     </main>
 </template>
 
